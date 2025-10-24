@@ -1,0 +1,19 @@
+project_id = "svxcvsrvqhpuadhfeyen"
+
+[functions.tekmetric-auth]
+verify_jwt = false
+
+[functions.sync-historical-data]
+verify_jwt = false
+
+[functions.sync-aging-wip]
+verify_jwt = false
+
+[functions.hourly-sync]
+verify_jwt = false
+
+[functions.test-tekmetric-api]
+verify_jwt = false
+
+[functions.debug-auth]
+verify_jwt = false

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Historical Sync Fix</title>
+</head>
+<body>
+    <h1>Testing Historical Data Sync with Date Fix</h1>
+    <div id="result">Starting sync test...</div>
+    
+    <script>
+        async function testSync() {
+            try {
+                console.log('Testing historical data sync with fixed date format...');
+                const response = await fetch('https://svxcvsrvqhpuadhfeyen.supabase.co/functions/v1/sync-historical-data', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2eGN2c3J2cWhwdWFkaGZleWVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczMzI0NTQsImV4cCI6MjA3MjkwODQ1NH0.tHWD8kA0WNAplP-bi-YNY9qNYn78QPhooLHE2G5V_g0',
+                        'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2eGN2c3J2cWhwdWFkaGZleWVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczMzI0NTQsImV4cCI6MjA3MjkwODQ1NH0.tHWD8kA0WNAplP-bi-YNY9qNYn78QPhooLHE2G5V_g0',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                console.log('Response:', data);
+                
+                if (response.ok && data.syncedPeriods > 0) {
+                    document.getElementById('result').innerHTML = `
+                        <h2>✅ Success! Historical data is now syncing</h2>
+                        <p><strong>Synced Periods:</strong> ${data.syncedPeriods}</p>
+                        <p><strong>Shops:</strong> ${data.shops}</p>
+                        <p>The Historical Performance tab should now show real data instead of demo data!</p>
+                        <p>Refresh the dashboard to see your actual Tekmetric data.</p>
+                        <pre style="background: #f0f8ff; padding: 10px; border-radius: 4px;">${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    document.getElementById('result').innerHTML = `
+                        <h2>⚠️ Still syncing or no data yet</h2>
+                        <p>Status: ${response.status}</p>
+                        <p>Synced Periods: ${data.syncedPeriods || 0}</p>
+                        <p>This might take a few more minutes as we're fetching 3 years of data...</p>
+                        <pre style="background: #fff3cd; padding: 10px; border-radius: 4px;">${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = `
+                    <h2>❌ Error</h2>
+                    <pre style="color: red;">${error.message}</pre>
+                `;
+            }
+        }
+        
+        testSync();
+    </script>
+</body>
+</html>

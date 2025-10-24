@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Tekmetric Direct</title>
+</head>
+<body>
+    <h1>Direct Tekmetric API Test</h1>
+    <div id="result">Testing credentials directly...</div>
+    
+    <script>
+        async function testDirectAuth() {
+            try {
+                console.log('Testing direct authentication to Tekmetric...');
+                
+                // Get the token first
+                console.log('Step 1: Getting token from our edge function...');
+                const tokenResponse = await fetch('https://svxcvsrvqhpuadhfeyen.supabase.co/functions/v1/tekmetric-auth', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2eGN2c3J2cWhwdWFkaGZleWVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczMzI0NTQsImV4cCI6MjA3MjkwODQ1NH0.tHWD8kA0WNAplP-bi-YNY9qNYn78QPhooLHE2G5V_g0',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('Token response status:', tokenResponse.status);
+                const tokenText = await tokenResponse.text();
+                console.log('Token response text:', tokenText);
+                
+                document.getElementById('result').innerHTML = `
+                    <h2>Authentication Test Results:</h2>
+                    <p><strong>Token Request Status:</strong> ${tokenResponse.status}</p>
+                    <p><strong>Response:</strong></p>
+                    <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">${tokenText}</pre>
+                    <p><strong>Next Steps:</strong></p>
+                    <ul>
+                        <li>If you see a 403 error with CloudFront, the API endpoint might be wrong</li>
+                        <li>If you see "Missing credentials", check your Tekmetric Client ID and Secret</li>
+                        <li>If you see a successful token, the issue might be with the shops API call</li>
+                    </ul>
+                `;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = `
+                    <h2>Error:</h2>
+                    <pre style="color: red;">${error.message}</pre>
+                `;
+            }
+        }
+        
+        testDirectAuth();
+    </script>
+</body>
+</html>
